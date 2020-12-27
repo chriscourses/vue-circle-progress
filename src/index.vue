@@ -43,10 +43,10 @@ export default {
     },
     animation: {
       required: false,
-      default: function() {
+      default() {
         return { duration: 1200, easing: 'circleProgressEasing' }
       },
-      validator: function(value) {
+      validator(value) {
         return value instanceof Object || value === false
       }
     },
@@ -88,6 +88,15 @@ export default {
       .on('circle-inited', function(event) {
         renderCircleBody(this, vm.progress / vm.scale)
         vm.$emit('vue-circle-init', event)
+        vm.$watch('progress', (nv) => {
+          vm.updateProgress(nv)
+        })
+        vm.$watch('fill', (fill) => {
+          vm.updateFill(fill)
+        })
+        vm.$watch('emptyFill', (emptyFill) => {
+          vm.updateEmptyFill(emptyFill)
+        })
       })
       .circleProgress({
         value: this.convertedProgress(vm.progress),
@@ -138,13 +147,18 @@ export default {
         )
       }
     },
-    updateFill: function(fill) {
+    updateFill(fill) {
       let circle = $(this.$el).data('circle-progress')
       circle.fill = fill
       circle.initFill()
+    },
+    updateEmptyFill(emptyFill) {
+      let circle = $(this.$el).data('circle-progress')
+      circle.emptyFill = emptyFill
+      circle.initFill()
     }
   },
-  afterDestroy: function() {
+  afterDestroy() {
     $(this.$el).remove()
   }
 }
