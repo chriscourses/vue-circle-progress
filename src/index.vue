@@ -81,6 +81,17 @@ export default {
       default: true
     }
   },
+  watch: {
+    progress(newProgress) {
+      this.updateProgress(newProgress)
+    },
+    fill(newFill) {
+      this.updateFill(newFill)
+    },
+    emptyFill(newEmptyFill) {
+      this.updateEmptyFill(newEmptyFill)
+    }
+  },
   mounted() {
     require('jquery-circle-progress')
     let vm = this
@@ -88,15 +99,6 @@ export default {
       .on('circle-inited', function(event) {
         renderCircleBody(this, vm.progress / vm.scale)
         vm.$emit('vue-circle-init', event)
-        vm.$watch('progress', (nv) => {
-          vm.updateProgress(nv)
-        })
-        vm.$watch('fill', (fill) => {
-          vm.updateFill(fill)
-        })
-        vm.$watch('emptyFill', (emptyFill) => {
-          vm.updateEmptyFill(emptyFill)
-        })
       })
       .circleProgress({
         value: this.convertedProgress(vm.progress),
@@ -155,7 +157,7 @@ export default {
     updateEmptyFill(emptyFill) {
       let circle = $(this.$el).data('circle-progress')
       circle.emptyFill = emptyFill
-      circle.initFill()
+      circle.init()
     }
   },
   afterDestroy() {
